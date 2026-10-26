@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+{% block title %}My library · Document Bazaar{% endblock %}
+{% block content %}
+<section class="page-shell">
+  <div class="page-intro"><div class="eyebrow muted-eyebrow">YOUR COLLECTION</div><h1>My <em>library.</em></h1><p>Resources you have added to your collection appear here.</p></div>
+  {% if purchases %}
+    <div class="document-grid">
+      {% for doc in purchases %}
+        <article class="document-card">
+          <div class="doc-cover cover-{{ loop.index0 % 5 }}"><span class="doc-category">{{ doc.category }}</span><div class="cover-glyph">▤</div><span class="cover-number">DB / {{ '%02d'|format(loop.index) }}</span></div>
+          <div class="doc-card-body"><div class="doc-meta"><span>ADDED TO LIBRARY</span></div><h3>{{ doc.title }}</h3><p>{{ doc.description or 'A resource from the marketplace.' }}</p><div class="doc-card-bottom"><span class="own-label">In your library</span><a class="text-action" href="{{ url_for('download_document', document_id=doc.id) }}">Download <span>↓</span></a></div></div>
+        </article>
+      {% endfor %}
+    </div>
+  {% else %}
+    <div class="empty-state"><div class="empty-icon">▤</div><h3>Your library is ready for its first resource.</h3><p>Explore the marketplace and add a resource to see it here.</p><a class="button button-dark" href="{{ url_for('index') }}">Explore documents <span>↗</span></a></div>
+  {% endif %}
+</section>
+{% endblock %}

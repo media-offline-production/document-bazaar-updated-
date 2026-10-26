@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+{% block title %}{{ doc.title }} · Document Bazaar{% endblock %}
+{% block content %}
+<section class="page-shell">
+  <div class="page-intro">
+    <div class="eyebrow muted-eyebrow">RESOURCE DETAILS</div>
+    <h1>{{ doc.title }}</h1>
+    <p>Read about this resource before purchasing. Your download will be available in My Library after the sandbox payment is verified.</p>
+  </div>
+  <article class="editor-card" style="max-width:820px">
+    <div class="doc-cover cover-0" style="border-radius:12px;margin-bottom:24px;height:190px">
+      <span class="doc-category">{{ doc.category }}</span>
+      <div class="cover-glyph">✳</div>
+      <span class="cover-number">DOCUMENT BAZAAR · DIGITAL DOWNLOAD</span>
+    </div>
+    <div class="doc-meta"><span>BY {{ doc.uploader_name|upper }}</span><span>{{ doc.created_at[:10] if doc.created_at else 'AVAILABLE NOW' }}</span></div>
+    <h2 style="font-family:Manrope,sans-serif;margin:14px 0 8px">About this resource</h2>
+    <p style="color:var(--muted);line-height:1.9;white-space:pre-line">{{ doc.description or 'A digital resource shared with the Document Bazaar community.' }}</p>
+    <div class="doc-card-bottom" style="margin-top:25px">
+      <strong class="price" style="font-size:24px">₹{{ '%.2f'|format(doc.price_paise / 100) }}</strong>
+      {% if user and user.id == doc.uploader_id %}
+        <span class="own-label">Your upload</span>
+      {% elif already_owned %}
+        <a class="button button-dark" href="{{ url_for('download_document', document_id=doc.id) }}">Download resource <span>↓</span></a>
+      {% elif not user %}
+        <a class="button button-dark" href="{{ url_for('login', next=url_for('document_detail', document_id=doc.id)) }}">Sign in to purchase <span>↗</span></a>
+      {% else %}
+        <form action="{{ url_for('purchase_document', document_id=doc.id) }}" method="post">
+          <button class="button button-dark" type="submit">Purchase resource <span>↗</span></button>
+        </form>
+      {% endif %}
+    </div>
+    <p class="field-help" style="margin-top:18px">Digital download only. PayU checkout is restricted to test mode in this project.</p>
+  </article>
+  <p style="margin-top:22px"><a class="text-action" href="{{ url_for('index') }}">← Back to marketplace</a></p>
+</section>
+{% endblock %}

@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% block title %}Share a resource · Document Bazaar{% endblock %}
+{% block content %}
+<section class="page-shell">
+  <div class="page-intro"><div class="eyebrow muted-eyebrow">CONTRIBUTE TO THE BAZAAR</div><h1>Share something <em>useful.</em></h1><p>Give your resource a clear title and description. The marketplace lead will review it before it goes live.</p></div>
+  <form class="editor-card form-stack" method="post" enctype="multipart/form-data">
+    <label>Document title<input name="title" required maxlength="180" placeholder="e.g. Beginner's guide to Python"></label>
+    <label>Short description<textarea name="description" rows="4" maxlength="1200" placeholder="What will someone learn or get from this resource?"></textarea></label>
+    <div class="form-two-col"><label>Category<select name="category"><option>Study Notes</option><option>Templates</option><option>Business</option><option>Design</option><option>Programming</option><option>Career</option><option>Productivity</option><option>Other</option></select></label><label>Price in ₹<input type="number" name="price" min="0.01" step="0.01" value="15.00" required><small class="field-help">Set a price above ₹0. Purchases use PayU sandbox while test mode is enabled.</small></label></div>
+    <label>Choose a file<input type="file" name="document" required accept=".pdf,.doc,.docx,.ppt,.pptx,.txt,.xls,.xlsx,.zip"><small class="field-help">PDF, Word, PowerPoint, text, Excel, or ZIP. Maximum 25 MB.</small></label>
+    <div class="review-note"><span>✳</span><p><strong>What happens next?</strong><br>Your upload stays unpublished until the marketplace lead approves it.</p></div>
+    <button class="button button-dark" type="submit">Submit for review <span>↗</span></button>
+  </form>
+</section>
+{% endblock %}

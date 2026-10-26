@@ -1,0 +1,82 @@
+{% extends "base.html" %}
+{% block title %}Explore documents · Document Bazaar{% endblock %}
+{% block content %}
+<section class="hero">
+  <div class="hero-orb orb-one"></div><div class="hero-orb orb-two"></div>
+  <div class="hero-content">
+    <div class="eyebrow"><span class="eyebrow-dot"></span> YOUR NEXT GREAT RESOURCE STARTS HERE</div>
+    <h1>Knowledge is better<br>when it’s <em>shared.</em></h1>
+    <p>Discover thoughtful templates, study notes, guides, and digital resources made to help you move forward.</p>
+    <form class="search-bar" action="{{ url_for('index') }}" method="get">
+      <span class="search-icon">⌕</span>
+      <input name="q" value="{{ search }}" placeholder="Search documents, notes, templates..." aria-label="Search documents">
+      <button type="submit">Search <span>→</span></button>
+    </form>
+    <div class="hero-footnote"><span>✦</span> Explore resources. Share what you know. Grow together.</div>
+  </div>
+  <div class="hero-art" aria-hidden="true">
+    <div class="art-glow"></div>
+    <div class="paper paper-back"><span class="paper-tag">YOUR IDEAS</span><div class="paper-line long"></div><div class="paper-line"></div><div class="paper-line short"></div><div class="paper-chart"><i></i><i></i><i></i><i></i><i></i></div></div>
+    <div class="paper paper-front"><span class="paper-icon">✳</span><span class="paper-mini">DOCUMENT NO. 024</span><h3>Make room<br>for good ideas.</h3><div class="paper-line long"></div><div class="paper-line short"></div><div class="paper-sign">D/B — COLLECTION</div></div>
+    <div class="floating-note note-top">✦ <span>Made to be useful</span></div>
+    <div class="floating-note note-bottom"><span class="note-check">✓</span><span><b>Worth keeping.</b><small>Find your next favorite.</small></span></div>
+  </div>
+</section>
+
+<section class="market-section" id="marketplace">
+  <div class="section-heading">
+    <div><div class="eyebrow muted-eyebrow">THE MARKETPLACE</div><h2>A little something<br><em>for your next big thing.</em></h2></div>
+    <p>Curated resources from people who have something useful to share.</p>
+  </div>
+  <form class="filter-row" action="{{ url_for('index') }}" method="get">
+    <input type="hidden" name="q" value="{{ search }}">
+    <a class="filter-chip {% if not selected_category %}active{% endif %}" href="{{ url_for('index', q=search) }}">All resources</a>
+    {% for category in categories %}
+      <button class="filter-chip {% if selected_category == category %}active{% endif %}" name="category" value="{{ category }}" type="submit">{{ category }}</button>
+    {% endfor %}
+    <span class="result-count">{{ documents|length }} resource{{ '' if documents|length == 1 else 's' }}</span>
+  </form>
+
+  {% if documents %}
+    <div class="document-grid">
+      {% for doc in documents %}
+        <article class="document-card">
+          <a href="{{ url_for('document_detail', document_id=doc.id) }}" aria-label="View details for {{ doc.title }}">
+          <div class="doc-cover cover-{{ loop.index0 % 5 }}">
+            <span class="doc-category">{{ doc.category }}</span>
+            <div class="cover-glyph">{{ ['✳', '▤', '⌘', '◈', '✦'][loop.index0 % 5] }}</div>
+            <span class="cover-number">DB / {{ '%02d'|format(loop.index) }}</span>
+          </div>
+          </a>
+          <div class="doc-card-body">
+            <div class="doc-meta"><span>BY {{ doc.uploader_name|upper }}</span><span>{{ doc.created_at[:10] if doc.created_at else 'NEW' }}</span></div>
+            <h3><a href="{{ url_for('document_detail', document_id=doc.id) }}">{{ doc.title }}</a></h3>
+            <p>{{ doc.description or 'A useful resource shared with the Document Bazaar community.' }}</p>
+            <div class="doc-card-bottom">
+              <strong class="price">₹{{ '%.2f'|format(doc.price_paise / 100) }}</strong>
+              {% if user and user.id == doc.uploader_id %}
+                <span class="own-label">Your upload</span>
+              {% else %}
+                <a class="text-action" href="{{ url_for('document_detail', document_id=doc.id) }}">View details <span>↗</span></a>
+              {% endif %}
+            </div>
+          </div>
+        </article>
+      {% endfor %}
+    </div>
+  {% else %}
+    <div class="empty-state">
+      <div class="empty-icon">✳</div>
+      <h3>{% if search or selected_category %}No matching resources yet.{% else %}The shelves are waiting.{% endif %}</h3>
+      <p>{% if search or selected_category %}Try another search or clear your filters.{% else %}Approved resources will appear here. Sign in to submit the first one for review.{% endif %}</p>
+      {% if search or selected_category %}<a class="button button-dark" href="{{ url_for('index') }}">Clear filters</a>{% elif user %}<a class="button button-dark" href="{{ url_for('sell') }}">Upload a document <span>↗</span></a>{% else %}<a class="button button-dark" href="{{ url_for('register') }}">Join the marketplace <span>↗</span></a>{% endif %}
+    </div>
+  {% endif %}
+</section>
+
+<section class="share-banner">
+  <div class="share-spark">✳</div>
+  <div><div class="eyebrow">HAVE SOMETHING TO SHARE?</div><h2>Your work could be someone’s <em>next step.</em></h2><p>Upload a resource, let the lead review it, and help good ideas travel further.</p></div>
+  <a class="button button-light" href="{{ url_for('sell') if user else url_for('login') }}">Share a resource <span>↗</span></a>
+</section>
+{% endblock %}

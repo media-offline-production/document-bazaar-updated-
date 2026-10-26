@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="page-shell narrow-shell">
+  <div class="form-card">
+    <span class="eyebrow">PAYU SANDBOX</span>
+    <h1>Continue to secure test checkout</h1>
+    <p>You are being redirected to PayU's test environment. This starter is configured for testing only; no live payment should be collected.</p>
+    <form id="payu-form" method="post" action="{{ endpoint }}">
+      {% for name, value in params.items() %}<input type="hidden" name="{{ name }}" value="{{ value }}">{% endfor %}
+      <button class="button button-dark" type="submit">Continue to PayU test checkout ↗</button>
+    </form>
+    <p class="muted small">If you did not expect this checkout, return to the marketplace without submitting.</p>
+  </div>
+</section>
+{% endblock %}

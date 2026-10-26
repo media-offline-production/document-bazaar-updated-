@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% block title %}{{ 'Create account' if mode == 'register' else 'Sign in' }} · Document Bazaar{% endblock %}
+{% block content %}
+<section class="auth-layout">
+  <div class="auth-aside"><div class="eyebrow"><span class="eyebrow-dot"></span> A COMMUNITY OF SHARED KNOWLEDGE</div><h1>Good things<br>start with <em>sharing.</em></h1><p>Keep your resources close, discover new ideas, and be part of a community that helps knowledge travel.</p><div class="auth-quote">“The right resource at the right time can change everything.”<span>— THE DOCUMENT BAZAAR WAY</span></div></div>
+  <div class="auth-panel">
+    <div class="auth-panel-top"><span class="auth-symbol">✳</span><span>DOCUMENT BAZAAR</span></div>
+    <h2>{{ 'Create your account' if mode == 'register' else 'Welcome back' }}</h2><p class="auth-subtitle">{{ 'Start collecting and sharing useful resources.' if mode == 'register' else 'Sign in to continue to your library.' }}</p>
+    <form method="post" class="form-stack">
+      {% if mode == 'register' %}<label>Your name<input name="name" required maxlength="100" autocomplete="name" placeholder="How should we call you?"></label>{% endif %}
+      <label>Email address<input type="email" name="email" required autocomplete="email" placeholder="you@example.com"></label>
+      <label>Password<input type="password" name="password" required minlength="8" autocomplete="{{ 'new-password' if mode == 'register' else 'current-password' }}" placeholder="{{ 'At least 8 characters' if mode == 'register' else 'Enter your password' }}"></label>
+      <button class="button button-dark button-full" type="submit">{{ 'Create account' if mode == 'register' else 'Sign in' }} <span>↗</span></button>
+    </form>
+    <p class="auth-switch">{% if mode == 'register' %}Already have an account? <a href="{{ url_for('login') }}">Sign in</a>{% else %}New to Document Bazaar? <a href="{{ url_for('register') }}">Create an account</a>{% endif %}</p>
+  </div>
+</section>
+{% endblock %}

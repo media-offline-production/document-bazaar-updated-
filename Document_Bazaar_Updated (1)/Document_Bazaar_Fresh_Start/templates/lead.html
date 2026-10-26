@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% block title %}Lead dashboard · Document Bazaar{% endblock %}
+{% block content %}
+<section class="page-shell lead-shell">
+  <div class="page-intro"><div class="eyebrow muted-eyebrow">MARKETPLACE CONTROL ROOM</div><h1>Lead <em>dashboard.</em></h1><p>Review submissions before they appear to customers.</p></div>
+  <div class="stats-grid"><div class="stat-card"><span>Customer accounts</span><strong>{{ stats.users }}</strong><small>Registered members</small></div><div class="stat-card"><span>Awaiting review</span><strong>{{ stats.pending }}</strong><small>Needs your attention</small></div><div class="stat-card"><span>Published resources</span><strong>{{ stats.approved }}</strong><small>Visible in marketplace</small></div><div class="stat-card"><span>Demo purchases</span><strong>{{ stats.purchases }}</strong><small>No payment collected</small></div></div>
+  <div class="table-section"><div class="table-heading"><div><h2>Pending submissions</h2><p>Approve a resource to publish it, or reject it to remove it.</p></div><span class="status-count">{{ pending|length }} pending</span></div>
+    {% if pending %}
+      <div class="review-list">
+        {% for doc in pending %}
+          <article class="review-item"><div class="review-file-icon">▤</div><div class="review-main"><h3>{{ doc.title }}</h3><p>{{ doc.description or 'No description supplied.' }}</p><div class="review-meta">By {{ doc.uploader_name }} ({{ doc.uploader_email }}) · {{ doc.category }} · {% if doc.price_paise == 0 %}Free{% else %}₹{{ '%.2f'|format(doc.price_paise / 100) }}{% endif %}</div><div class="review-meta">File: {{ doc.original_filename }}</div></div><div class="review-actions"><form method="post" action="{{ url_for('approve_document', document_id=doc.id) }}"><button class="button button-dark button-small" type="submit">Approve ✓</button></form><form method="post" action="{{ url_for('reject_document', document_id=doc.id) }}" onsubmit="return confirm('Reject and remove this submission?')"><button class="button button-outline button-small" type="submit">Reject</button></form></div></article>
+        {% endfor %}
+      </div>
+    {% else %}<div class="table-empty"><span>✓</span><strong>All caught up.</strong><p>There are no submissions waiting for review.</p></div>{% endif %}
+  </div>
+  <div class="table-section"><div class="table-heading"><div><h2>Published resources</h2><p>Currently available in the marketplace.</p></div></div>
+    {% if approved %}<div class="published-list">{% for doc in approved %}<div class="published-row"><span class="published-icon">▤</span><div><strong>{{ doc.title }}</strong><small>By {{ doc.uploader_name }} · {{ doc.category }}</small></div><span class="published-price">{% if doc.price_paise == 0 %}Free{% else %}₹{{ '%.2f'|format(doc.price_paise / 100) }}{% endif %}</span><span class="published-status">Live</span></div>{% endfor %}</div>{% else %}<div class="table-empty"><p>No approved resources yet.</p></div>{% endif %}
+  </div>
+</section>
+{% endblock %}
